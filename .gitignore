@@ -1,0 +1,15 @@
+# Environment variables - NEVER commit these
+server/.env
+.env
+
+# Dependencies
+node_modules/
+server/node_modules/
+azani/node_modules/
+
+# Build output
+azani/build/
+
+# Logs
+*.log
+npm-debug.log*
