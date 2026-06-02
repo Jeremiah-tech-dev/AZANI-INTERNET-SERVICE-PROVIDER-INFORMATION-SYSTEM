@@ -6,7 +6,7 @@ const { startBillingJobs } = require('./services/billing');
 
 const app = express();
 
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({ origin: ['http://localhost:3000', 'https://azani-isp.vercel.app', /\.vercel\.app$/] }));
 app.use(express.json());
 
 // Routes
