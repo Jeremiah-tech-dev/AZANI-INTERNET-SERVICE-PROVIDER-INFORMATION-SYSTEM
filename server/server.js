@@ -11,6 +11,7 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/dashboard', require('./routes/dashboard'));
+app.use('/api/institution', require('./routes/institution'));
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
