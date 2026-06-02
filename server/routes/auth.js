@@ -36,8 +36,8 @@ router.post('/login', async (req, res) => {
     const match = await bcrypt.compare(password, institution.password);
     if (!match) return res.status(400).json({ message: 'Invalid credentials' });
 
-    const token = jwt.sign({ id: institution._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    res.json({ token, institution: { id: institution._id, institutionName: institution.institutionName, email } });
+    const token = jwt.sign({ id: institution._id, role: institution.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    res.json({ token, institution: { id: institution._id, institutionName: institution.institutionName, email, role: institution.role } });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

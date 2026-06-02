@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
 
 const institutionSchema = new mongoose.Schema({
+  role: { type: String, enum: ['admin', 'institution'], default: 'institution' },
   institutionName: { type: String, required: true, trim: true },
-  institutionType: { type: String, required: true, enum: ['primary', 'junior', 'senior', 'college'] },
-  contactPersonName: { type: String, required: true, trim: true },
+  institutionType: { type: String, enum: ['primary', 'junior', 'senior', 'college'], default: null },
+  contactPersonName: { type: String, trim: true },
   email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-  phoneNumber: { type: String, required: true, trim: true },
+  phoneNumber: { type: String, trim: true },
   password: { type: String, required: true },
   registrationFeePaid: { type: Boolean, default: false },
   serviceActive: { type: Boolean, default: false },
