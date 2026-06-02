@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd azani && npm install && npm run build",
+  "outputDirectory": "azani/build",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
