@@ -64,7 +64,7 @@ router.get('/types', async (req, res) => {
 router.get('/recent', async (req, res) => {
   try {
     const institutions = await Institution.find({ role: 'institution' },
-      'institutionName institutionType currentBandwidth serviceActive registrationFeePaid createdAt'
+      'institutionName institutionType currentBandwidth serviceActive registrationFeePaid registrationPaymentSubmitted createdAt'
     ).sort({ createdAt: -1 }).limit(10);
     res.json(institutions);
   } catch (err) { res.status(500).json({ message: err.message }); }

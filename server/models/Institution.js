@@ -12,6 +12,8 @@ const institutionSchema = new mongoose.Schema({
   registrationPaymentSubmitted: { type: Boolean, default: false },
   serviceActive: { type: Boolean, default: false },
   installationFeePaid: { type: Boolean, default: false },
+  monthlyFeePaid: { type: Boolean, default: false },
+  needsReconnection: { type: Boolean, default: false },
   currentBandwidth: { type: String, enum: ['4', '10', '20', '25', '50'], default: null },
   numberOfUsers: { type: Number, default: 0 },
   lanNodesPurchased: { type: Number, default: 0 },
