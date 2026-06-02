@@ -19,7 +19,10 @@ const institutionSchema = new mongoose.Schema({
   lanNodesPurchased: { type: Number, default: 0 },
   computersPurchased: { type: Number, default: 0 },
   hasLAN: { type: Boolean, default: false },
-  isReadyForConnectivity: { type: Boolean, default: false }
+  isReadyForConnectivity: { type: Boolean, default: false },
+  currentMonth: { type: String, default: null }, // e.g. "2025-07" — month for which monthly fee was last paid
+  reconnectionFeePaid: { type: Boolean, default: false },
+  disconnectedAt: { type: Date, default: null }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Institution', institutionSchema);

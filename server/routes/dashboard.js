@@ -1,5 +1,6 @@
 const express = require('express');
 const Institution = require('../models/Institution');
+const Payment = require('../models/Payment');
 const router = express.Router();
 
 const BW_PRICES = { '4': 1200, '10': 2000, '20': 3500, '25': 4000, '50': 7000 };
@@ -134,7 +135,7 @@ router.get('/disconnections', async (req, res) => {
   try {
     const all = await Institution.find({
       role: 'institution', serviceActive: false, registrationFeePaid: true
-    }, 'institutionName institutionType email phoneNumber currentBandwidth needsReconnection updatedAt').sort({ updatedAt: -1 });
+    }, 'institutionName institutionType email phoneNumber currentBandwidth needsReconnection disconnectedAt updatedAt').sort({ updatedAt: -1 });
     res.json(all);
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
@@ -173,11 +174,42 @@ router.get('/reports', async (req, res) => {
 router.put('/institutions/:id/activate', async (req, res) => {
   try {
     const { registrationFeePaid, serviceActive, currentBandwidth, installationFeePaid } = req.body;
+    const prev = await Institution.findById(req.params.id);
+
+    // Record registration payment in ledger if newly marked paid
+    if (registrationFeePaid && prev && !prev.registrationFeePaid) {
+      await Payment.create({
+        institution: prev._id,
+        institutionName: prev.institutionName,
+        type: 'registration',
+        amount: 8500,
+        method: 'cash',
+      });
+    }
+    // Record installation payment in ledger if newly marked paid
+    if (installationFeePaid && prev && !prev.installationFeePaid) {
+      await Payment.create({
+        institution: prev._id,
+        institutionName: prev.institutionName,
+        type: 'installation',
+        amount: 10000,
+        method: 'cash',
+      });
+    }
+
     const inst = await Institution.findByIdAndUpdate(req.params.id,
       { registrationFeePaid, serviceActive, currentBandwidth, installationFeePaid },
       { new: true, select: '-password' }
     );
     res.json(inst);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+// GET /api/dashboard/payment-history/:id — full ledger for one institution
+router.get('/payment-history/:id', async (req, res) => {
+  try {
+    const payments = await Payment.find({ institution: req.params.id }).sort({ createdAt: -1 });
+    res.json(payments);
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
