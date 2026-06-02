@@ -14,6 +14,13 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [pwdFocused, setPwdFocused] = useState(false);
 
+  const [toast, setToast] = useState(null); // { type: 'success'|'error', message }
+
+  const showToast = (type, message) => {
+    setToast({ type, message });
+    setTimeout(() => setToast(null), 4000);
+  };
+
   const pwdRules = [
     { label: 'At least 8 characters', test: p => p.length >= 8 },
     { label: 'One uppercase letter (A–Z)', test: p => /[A-Z]/.test(p) },
@@ -38,12 +45,16 @@ function App() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('institution', JSON.stringify(data.institution));
-      setToken(data.token);
-      setInstitution(data.institution);
+      showToast('success', isLogin ? '✅ Login successful! Redirecting...' : '🎉 Account created! Welcome to Azani ISP!');
+      setTimeout(() => {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('institution', JSON.stringify(data.institution));
+        setToken(data.token);
+        setInstitution(data.institution);
+      }, 1200);
     } catch (err) {
       setError(err.message);
+      showToast('error', `❌ ${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -176,6 +187,25 @@ function App() {
         </div>
 
       </div>
+
+      {/* LOADING OVERLAY */}
+      {loading && (
+        <div className="auth-overlay">
+          <div className="auth-overlay-box">
+            <div className="auth-spinner" />
+            <p>{isLogin ? 'Signing you in...' : 'Creating your account...'}</p>
+          </div>
+        </div>
+      )}
+
+      {/* TOAST */}
+      {toast && (
+        <div className={`auth-toast auth-toast-${toast.type}`}>
+          <span className="auth-toast-icon">{toast.type === 'success' ? '✅' : '❌'}</span>
+          <span>{toast.message}</span>
+          <div className="auth-toast-bar" />
+        </div>
+      )}
     </div>
   );
 }
